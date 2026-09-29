@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend Mastery & Project Tracker | Guía de Proyectos y Temario de Estudios</title>
+  <meta name="description" content="Plataforma interactiva para gestionar proyectos de desarrollo de software y guía de estudio exhaustiva de Backend, APIs y Microservicios.">
+  
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Hojas de Estilos -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Barra de Navegación Principal -->
+  <header class="navbar">
+    <div class="container nav-wrapper">
+      <a href="#" class="logo-badge" onclick="switchTab('dashboard')">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">
+          <h1>BackendForge</h1>
+          <span>Project Tracker & Roadmap</span>
+        </div>
+      </a>
+
+      <!-- Pestañas de Navegación -->
+      <nav class="nav-tabs" aria-label="Navegación principal">
+        <button class="tab-btn active" data-tab="dashboard">
+          <span>📊</span> Dashboard
+        </button>
+        <button class="tab-btn" data-tab="roadmap">
+          <span>🗺️</span> Temario & Ruta
+        </button>
+        <button class="tab-btn" data-tab="projects">
+          <span>📁</span> Mis Proyectos
+        </button>
+        <button class="tab-btn" data-tab="portfolio">
+          <span>🌟</span> Showcase Portafolio
+        </button>
+      </nav>
+
+      <!-- Acciones de Cabecera -->
+      <div class="nav-actions">
+        <button class="btn btn-secondary btn-sm" id="themeToggleBtn" title="Cambiar tema">
+          ☀️ Modo Claro
+        </button>
+        <button class="btn btn-primary btn-sm" id="newProjectBtn">
+          <span>➕</span> Nuevo Proyecto
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sección Hero y Métricas Globales -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <span class="badge-pill">Arquitectura Backend • APIs • Microservicios</span>
+          <h2 class="hero-title">Guía de Proyectos & Temario de Especialización</h2>
+          <p class="hero-desc">
+            Domina las habilidades críticas que demandan los equipos de ingeniería de alto nivel: desde fundamentos de redes y APIs enterprise, hasta microservicios distribuidos, Kafka, Docker, Kubernetes y observabilidad con OpenTelemetry. Cada fase incluye proyectos reales listos para añadir a tu portafolio.
+          </p>
+
+          <!-- Barra de Progreso Global del Temario -->
+          <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">
+              Progreso Global del Temario de Estudio
+            </span>
+            <span id="globalProgressPercent" style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">0%</span>
+          </div>
+          <div class="progress-container" style="height: 10px; margin-bottom: 1.5rem;">
+            <div id="globalProgressBar" class="progress-bar" style="width: 0%;"></div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm" onclick="switchTab('roadmap')">
+              <span>🚀</span> Ver Fases de Estudio
+            </button>
+            <button class="btn btn-secondary btn-sm" id="newProjectHeroBtn">
+              <span>📁</span> Registrar un Proyecto
+            </button>
+            <button class="btn btn-secondary btn-sm" id="exportDataBtn" title="Exportar copia de seguridad en JSON">
+              <span>💾</span> Exportar Datos
+            </button>
+            <button class="btn btn-secondary btn-sm" id="importDataBtn" title="Importar copia de seguridad">
+              <span>📥</span> Importar Backup
+            </button>
+            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+          </div>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+              📚
+            </div>
+            <div class="stat-info">
+              <span id="statTopicsCompleted" class="stat-value">0 / 0</span>
+              <span class="stat-label">Módulos de Estudio</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+              🏆
+            </div>
+            <div class="stat-info">
+              <span id="statProjectsCompleted" class="stat-value">0</span>
+              <span class="stat-label">Proyectos Listos</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+              ⚡
+            </div>
+            <div class="stat-info">
+              <span id="statProjectsInProgress" class="stat-value">0</span>
+              <span class="stat-label">En Desarrollo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenedor Principal de Vistas -->
+  <main class="container" style="padding-bottom: 4rem;">
+
+    <!-- VISTA 1: DASHBOARD GENERAL -->
+    <div id="view-dashboard" class="view-panel active">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🗺️</span> Progreso por Fases de Especialización
+        </h3>
+        <button class="btn btn-secondary btn-sm" onclick="switchTab('roadmap')">Ver temario completo →</button>
+      </div>
+
+      <!-- Resumen de las 8 fases -->
+      <div id="dashboardPhasesSummary" class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 3rem;">
+        <!-- Se rellena dinámicamente -->
+      </div>
+
+      <!-- Proyectos Recientes en el Portafolio -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+          <span>💼</span> Proyectos en tu Portafolio
+        </h3>
+        <button class="btn btn-secondary btn-sm" onclick="switchTab('projects')">Gestionar todos los proyectos →</button>
+      </div>
+
+      <div id="dashboardRecentProjects" class="projects-grid">
+        <!-- Se rellena dinámicamente -->
+      </div>
+    </div>
+
+    <!-- VISTA 2: TEMARIO & RUTA DE ESTUDIO (ROADMAP) -->
+    <div id="view-roadmap" class="view-panel">
+      <div class="toolbar">
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem;">Ruta Profesional de Backend & Sistemas Distribuidos</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">
+            Marca cada módulo a medida que lo domines. Cada fase cuenta con proyectos recomendados que puedes agregar a tu portafolio con un solo clic.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-secondary btn-sm" id="resetDataBtn">
+            <span>🔄</span> Restablecer Ejemplo
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenedor dinámico de las 8 Fases del Temario -->
+      <div id="roadmapPhasesContainer">
+        <!-- Renderizado dinámicamente desde ROADMAP_DATA -->
+      </div>
+    </div>
+
+    <!-- VISTA 3: MIS PROYECTOS (TRACKER) -->
+    <div id="view-projects" class="view-panel">
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="projectSearchInput" class="search-input" placeholder="Buscar por título, tecnología, descripción o tag...">
+        </div>
+
+        <div class="filter-group">
+          <select id="statusFilter" class="filter-select">
+            <option value="all">Todos los Estados</option>
+            <option value="planificado">⏳ Planificados</option>
+            <option value="en_progreso">⚡ En Desarrollo</option>
+            <option value="completado">✔ Completados</option>
+          </select>
+
+          <select id="categoryFilter" class="filter-select">
+            <option value="all">Todas las Categorías</option>
+            <option value="Backend Core">Backend Core</option>
+            <option value="APIs & Contracts">APIs & Contratos</option>
+            <option value="Databases & Cache">Bases de Datos & Caché</option>
+            <option value="Security & Auth">Seguridad & Auth</option>
+            <option value="Distributed Systems">Sistemas Distribuidos</option>
+            <option value="Testing & Reliability">Testing & Calidad</option>
+            <option value="DevOps & CI/CD">DevOps & Cloud</option>
+            <option value="Observability">Observabilidad</option>
+          </select>
+
+          <button class="btn btn-primary btn-sm" onclick="openProjectModal()">
+            <span>➕</span> Nuevo Proyecto
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid de Proyectos -->
+      <div id="projectsContainer" class="projects-grid">
+        <!-- Se rellena dinámicamente -->
+      </div>
+    </div>
+
+    <!-- VISTA 4: SHOWCASE DE PORTAFOLIO -->
+    <div id="view-portfolio" class="view-panel">
+      <div class="showcase-header">
+        <span class="badge-pill">Portfolio Ready</span>
+        <h2>Portafolio de Ingeniería Backend</h2>
+        <p>
+          Esta es la presentación ejecutiva de tus proyectos desarrollados y en construcción, diseñada con los estándares que evalúan líderes técnicos y reclutadores de software.
+        </p>
+      </div>
+
+      <div id="portfolioShowcaseContainer">
+        <!-- Se rellena dinámicamente con proyectos listos para portafolio -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL PARA CREAR / EDITAR PROYECTO -->
+  <div id="projectModalOverlay" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="projectModalTitle" class="modal-title">Nuevo Proyecto</h3>
+        <button id="closeProjectModal" class="modal-close" aria-label="Cerrar modal">&times;</button>
+      </div>
+
+      <form id="projectForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="formProjectTitle">Título del Proyecto *</label>
+            <input type="text" id="formProjectTitle" class="form-control" placeholder="Ej: Plataforma de Microservicios con Saga Pattern" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="formProjectCategory">Categoría Técnica</label>
+              <select id="formProjectCategory" class="form-control">
+                <option value="Backend Core">Backend Core</option>
+                <option value="APIs & Contracts">APIs & Contratos</option>
+                <option value="Databases & Cache">Bases de Datos & Caché</option>
+                <option value="Security & Auth">Seguridad & Auth</option>
+                <option value="Distributed Systems">Sistemas Distribuidos</option>
+                <option value="Testing & Reliability">Testing & Calidad</option>
+                <option value="DevOps & CI/CD">DevOps & Cloud</option>
+                <option value="Observability">Observabilidad</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formProjectStatus">Estado del Proyecto</label>
+              <select id="formProjectStatus" class="form-control">
+                <option value="planificado">⏳ Planificado</option>
+                <option value="en_progreso">⚡ En Desarrollo</option>
+                <option value="completado">✔ Completado (Listo para Portafolio)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="formProjectPriority">Prioridad</label>
+              <select id="formProjectPriority" class="form-control">
+                <option value="baja">Baja</option>
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formProjectPhase">Fase / Origen de la Guía</label>
+              <input type="text" id="formProjectPhase" class="form-control" placeholder="Ej: Fase 5: Microservicios">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="formProjectRepo">URL Repositorio GitHub</label>
+              <input type="url" id="formProjectRepo" class="form-control" placeholder="https://github.com/usuario/proyecto">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formProjectDemo">URL Demo / Swagger Docs</label>
+              <input type="url" id="formProjectDemo" class="form-control" placeholder="https://mi-api.dev/api-docs">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formProjectPostman">URL Colección Postman / Workspace (Opcional)</label>
+            <input type="url" id="formProjectPostman" class="form-control" placeholder="https://documenter.getpostman.com/view/...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formProjectTags">Tecnologías y Tags (separados por coma)</label>
+            <input type="text" id="formProjectTags" class="form-control" placeholder="Node.js, PostgreSQL, Docker, Redis, Kafka">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formProjectDescription">Descripción General del Proyecto</label>
+            <textarea id="formProjectDescription" class="form-control" rows="3" placeholder="Explica el problema que resuelve, la arquitectura seleccionada y el valor de negocio..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formProjectFeatures">Características Clave / Entregables (uno por línea)</label>
+            <textarea id="formProjectFeatures" class="form-control" rows="3" placeholder="Saga Pattern implementado con Kafka&#10;Transactional Outbox con Debezium&#10;Entorno levantable con Docker Compose"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formProjectNotes">Notas Personales / Aprendizajes</label>
+            <textarea id="formProjectNotes" class="form-control" rows="2" placeholder="Notas sobre dificultades encontradas, optimizaciones pendientes..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancelProjectBtn" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts de la Aplicación -->
+  <script src="js/data/roadmapData.js"></script>
+  <script src="js/data/initialProjects.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
